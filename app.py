@@ -41,6 +41,8 @@ st.sidebar.info("💡 Try: '100Hz square wave', 'linear chirp sweep to 500Hz', '
 # --- Logic Processing ---
 if 'code_content' not in st.session_state:
     st.session_state.code_content = ""
+if 'mat_code_content' not in st.session_state:
+    st.session_state.mat_code_content = ""
 
 params = parse_prompt(user_prompt)
 params['fs'] = fs
@@ -49,6 +51,7 @@ params['duration'] = duration
 # Initial Code Generation (only if prompt changes)
 if st.sidebar.button("✨ Regenerate from Prompt") or st.session_state.code_content == "":
     st.session_state.code_content = generate_python_code(params)
+    st.session_state.mat_code_content = generate_matlab_code(params)
 
 # --- Main Layout ---
 st.title("📡 NLP to Signal Processing Studio")
@@ -57,14 +60,27 @@ st.caption("Live Code Editing | Real-time Visualization | Data Export")
 col1, col2 = st.columns([1, 1])
 
 with col1:
-    st.subheader("💻 Live Python Editor")
-    edited_code = st.text_area("Edit generated code here:", 
-                              value=st.session_state.code_content, 
-                              height=400,
-                              label_visibility="collapsed")
+    st.subheader("💻 Interactive Editors")
+    edit_tab_py, edit_tab_mat = st.tabs(["🐍 Python Editor", "📐 MATLAB Editor"])
     
-    if st.button("🚀 Run & Update Plot"):
-        st.session_state.code_content = edited_code
+    with edit_tab_py:
+        edited_code = st.text_area("Python Editor", 
+                                  value=st.session_state.code_content, 
+                                  height=400,
+                                  label_visibility="collapsed",
+                                  key="py_editor")
+        if st.button("🚀 Run & Update Plot", key="run_py"):
+            st.session_state.code_content = edited_code
+
+    with edit_tab_mat:
+        st.info("Note: MATLAB code editing is supported for export. Live execution requires local MATLAB engine.")
+        edited_mat_code = st.text_area("MATLAB Editor", 
+                                      value=st.session_state.mat_code_content, 
+                                      height=350,
+                                      label_visibility="collapsed",
+                                      key="mat_editor")
+        if st.button("💾 Save MATLAB Edits", key="save_mat"):
+            st.session_state.mat_code_content = edited_mat_code
 
 with col2:
     st.subheader("📊 Visualization")
@@ -113,7 +129,7 @@ ex_col1.download_button("💾 Download Signal (CSV)", csv_data, "signal.csv", "t
 
 # Prepare Code
 ex_col2.download_button("🐍 Download Python (.py)", st.session_state.code_content, "signal_gen.py")
-ex_col3.download_button("📐 Download MATLAB (.m)", generate_matlab_code(params), "signal_gen.m")
+ex_col3.download_button("📐 Download MATLAB (.m)", st.session_state.mat_code_content, "signal_gen.m")
 
 # Parameter Dashboard
 st.markdown("---")
