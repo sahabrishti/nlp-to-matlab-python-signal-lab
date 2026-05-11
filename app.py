@@ -9,12 +9,20 @@ import io
 # Page Config
 st.set_page_config(page_title="NLP Signal Studio", page_icon="📡", layout="wide")
 
-# Custom CSS
+# Custom CSS for better visibility
 st.markdown("""
     <style>
-    .stApp { background-color: #0e1117; color: white; }
-    .stTabs [data-baseweb="tab-list"] { gap: 24px; }
-    .stTabs [data-baseweb="tab"] { height: 50px; white-space: pre-wrap; font-weight: bold; }
+    .stButton>button {
+        background-color: #ff4b4b !important;
+        color: white !important;
+        border: none !important;
+        font-weight: bold !important;
+    }
+    .stDownloadButton>button {
+        background-color: #00d1ff !important;
+        color: black !important;
+        font-weight: bold !important;
+    }
     </style>
     """, unsafe_allow_html=True)
 
