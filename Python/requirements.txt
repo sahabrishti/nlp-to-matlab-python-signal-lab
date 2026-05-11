@@ -1,0 +1,10 @@
+numpy
+scipy
+matplotlib
+transformers
+torch
+sentencepiece
+ipykernel
+streamlit
+pandas
+plotly
